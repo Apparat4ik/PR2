@@ -1,14 +1,9 @@
-//
-//  main.cpp
-//  PR2
-//
-//  Created by Владислав on 20.08.2025.
-//
+#include "header.h"
 
-#include <iostream>
 
-int main(int argc, const char * argv[]) {
-    // insert code here...
-    std::cout << "Hello, World!\n";
+
+
+int main() {
+    
     return 0;
 }
