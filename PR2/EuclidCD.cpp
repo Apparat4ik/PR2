@@ -34,9 +34,14 @@ T CorrectInput(T min_value = numeric_limits<T>::min(), T max_value = numeric_lim
 }
 
 
+void Tests_Euclid(){
+    assert(ExtendedEuclid(7, 11) == -3);
+}
 
 
-int main(){
+void EuclidSolve(){
+    Tests_Euclid();
+    
     try {
         cout << "Вычислим такое число d: c*d mod m = 1" << endl;
         cout << "Введите числа c (число для обратного элемента) и m (модуль): " << endl;
@@ -49,8 +54,7 @@ int main(){
     } catch (exception& s){
         cerr << s.what();
     }
-    
-    
-    
-    return 0;
 }
+
+
+

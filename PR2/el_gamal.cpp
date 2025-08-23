@@ -15,20 +15,20 @@ uint64_t Private_Key;
 
 uint64_t Session_Key;
 
-vector<uint64_t> pr_num;
+vector<int> pr_num;
 
 
 
 
 ostream& operator<<(ostream& os, vector<pair<uint64_t, uint64_t>> vc){
     for (pair<uint64_t, uint64_t> pr : vc){
-        os << pr.first << ' ' << pr.second << ' ';
+        os << '(' << pr.first << ' ' << pr.second << ')' << ' ';
     }
     return os;
 }
 
 
-vector<uint64_t> Sieve(int n) {                 // нахождение простых чисел через решето Эратосфена
+vector<int> Sieve(int n) {                 // нахождение простых чисел через решето Эратосфена
     vector<bool> is_prime(n + 1, true);
     
     for (int i = 2; i <= n; i++)
@@ -269,12 +269,57 @@ void DemonstrateAttack() {
 }
 
 
-int main(){
+void Test_Sypher(){
+    vector<int> sv = {2,3,5,7,11,13,17,19,23};
+    assert(Sieve(25) == sv);
+    assert(Mod_pow(3, 100, 7) == 4);
+    vector<pair<uint64_t, uint64_t>> dc = {{3, 2}};
+    assert(Decomposition(9) == dc);
+    assert(MillerTest(15, 5) == false);
+   // assert(G_is_PrimitiveRoot(<#uint64_t g#>, <#uint64_t p#>));
+    // M_to_text
+}
+
+
+void LaunchSypher(){
+    Test_Sypher();
+    
     Sieve(500);
     GenKeys(30, 10);
     Session_Key = 1 + (gen() % (Public_Key['p'] - 2));
     string plain_text;
     cout << "Введите текст, который хотите зашифровать" << endl;
+    
+    getline(cin, plain_text);
+    getline(cin, plain_text);
+
+    for (uint8_t ltr : plain_text){
+        Encryption(ltr);
+        plain_text.erase(0);
+    }
+   
+    cout << "Зашифрованное сообшение: " << endl;
+    cout << Cypher_text << endl;
+    
+    cout << "Расшифрованное сообщение: " << endl;
+    
+    Decryption(plain_text);
+    cout << plain_text << endl;
+
+}
+
+
+
+void LaunchWithAtack(){
+    Test_Sypher();
+    
+    Sieve(500);
+    GenKeys(25, 10);
+    Session_Key = 1 + (gen() % (Public_Key['p'] - 2));
+    string plain_text;
+    cout << "Введите текст, который хотите зашифровать" << endl;
+    
+    getline(cin, plain_text);
     getline(cin, plain_text);
     
     for (uint8_t ltr : plain_text){
@@ -291,7 +336,6 @@ int main(){
     
     Decryption(plain_text);
     cout << plain_text << endl;
-
-    
-    return 0;
 }
+
+

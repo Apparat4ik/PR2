@@ -1,3 +1,5 @@
+#pragma once
+
 #include <iostream>
 #include <vector>
 #include <stdint.h>
@@ -23,5 +25,23 @@ enum class Sellection{
     ATACK,
     NOATTACK,
     
-    CONFRACT
+    CONFRACT,
+    
+    UNKNOWN,
+    BACK,
+    EXIT
 };
+
+
+void Classic_Solve();
+void Log_solve();
+
+void EuclidSolve();
+
+void LaunchSypher();
+void LaunchWithAtack();
+
+void PrintSolution();
+
+
+

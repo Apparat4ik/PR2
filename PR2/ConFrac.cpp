@@ -29,7 +29,16 @@ int GCD(int a, int b) {
 }
 
 
+void Tests_Fraction(){
+    vector<int> fr = {1, 2, 14, 9, 1, 2};
+    assert(ContinedFraction(1256, 847) == fr);
+    assert(GCD(1256, 847) == 1);
+}
+
+
 void Solution(int a, int b, int d){
+    Tests_Fraction();
+    
     if (GCD(a, b) != 1){
         cerr << "Нет решений" << endl;
     }
@@ -57,7 +66,9 @@ void Solution(int a, int b, int d){
 }
 
 
-int main(){
+
+
+void PrintSolution(){
     cout << "Исходное уравнение: " << endl;
     int a = 1256, b = 847, d = 119;
     cout << a << "а" << " + " << b << "б" << " = " << d << endl;
@@ -68,6 +79,6 @@ int main(){
     }
     cout << endl;
     Solution(a, b, d);
-    
-    return 0;
 }
+
+

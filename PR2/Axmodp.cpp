@@ -1,8 +1,8 @@
 #include "header.h"
 
 
-vector<int8_t> Dec_to_Bin(int64_t num){  // перевод числа из десятичной системы счисления в двоичную
-    vector<int8_t> binnum;
+vector<int> Dec_to_Bin(int64_t num){  // перевод числа из десятичной системы счисления в двоичную
+    vector<int> binnum;
     while (num > 0){
         binnum.push_back(num % 2);
         num /= 2;
@@ -36,7 +36,7 @@ int64_t AxmodpLog(int64_t a, int64_t x, const int64_t& p){    // вычисле�
         row_of_a.push_back(Mod_pow(a, pow(2, i), p));     // запиываем ряд <a, a^2, a^4, ... a^(2^z)>
     }
     
-    vector<int8_t> binx = Dec_to_Bin(x);
+    vector<int> binx = Dec_to_Bin(x);
     int64_t result = 1;
     for (int i = 0; i < max_pow_of2; i++){                // перемножаем значения ряда, на индекса которых в двоичном представлении числа стоит 1
         if (binx[i] == 1){
@@ -116,7 +116,57 @@ T CorrectInput(T min_value, T max_value = numeric_limits<T>::max()){      // ф�
 }
 
 
-int main(){
+void Tests_AXMODP(){
+    assert(Axmodp(3, 100, 7) == 4);
+    assert(GCD_is1(1234, 54) == false);
+    assert(Primary(19, 5) == true);
+    assert(AxmodpLog(3, 100, 7) == 4);
+    //assert(Mod_pow(<#int64_t a#>, <#int64_t x#>, <#const int64_t &p#>));
+    vector<int> vc = {1,0,1,0,0,1,0,1};
+    assert(Dec_to_Bin(165) == vc);
+}
+
+
+void Classic_Solve(){
+    Tests_AXMODP();
+    
+    try {
+        cout << "Введите певрое число и его степнь через пробел: " << '\t';
+        int64_t a1 = CorrectInput<int64_t>(0);
+        int64_t x1 = CorrectInput<int64_t>(0);
+        
+        
+        cout << "Введите второе число и его степнь через пробел: " << '\t';
+        int64_t a2 = CorrectInput<int64_t>(0);
+        int64_t x2 = CorrectInput<int64_t>(0);
+        
+        
+        cout << "Введите число, по модулю которого числа будут сравниваться: " << '\t';
+        int64_t p = CorrectInput<int64_t>(1);
+        
+
+        cout << "Введите число проверок по теореме Ферма (не больше 200): " << '\t';
+        int k = CorrectInput<int>(1, 200);
+        
+        
+
+        if (!Primary(p, k)) {
+            cout << "Число p составное, введите простое число" << endl;
+        }
+        if (Axmodp(a1, x1, p) == Axmodp(a2, x2, p)) {
+            cout << "Числа равны по модулю" << endl;
+        } else {
+            cout << "Числа не равны по модулю, остатки первого и второго соответственно: " <<Axmodp(a1, x1, p) << ' ' << Axmodp(a2, x2, p) << endl;
+        }
+    } catch (exception& s){
+        cerr << s.what();
+    }
+}
+
+
+void Log_solve(){
+    Tests_AXMODP();
+    
     try {
         cout << "Введите певрое число и его степнь через пробел: " << '\t';
         int64_t a1 = CorrectInput<int64_t>(0);
@@ -148,6 +198,4 @@ int main(){
     } catch (exception& s){
         cerr << s.what();
     }
-    return 0;
 }
-
