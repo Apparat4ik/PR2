@@ -1,6 +1,15 @@
 #include "header.h"
 
 
+template<typename T>
+ostream& operator<<(ostream& os, vector<T> vc){
+    for (T it : vc){
+        os << it << ' ';
+    }
+    return os;
+}
+
+
 vector<int> Dec_to_Bin(int64_t num){  // перевод числа из десятичной системы счисления в двоичную
     vector<int> binnum;
     while (num > 0){
@@ -36,11 +45,14 @@ int64_t AxmodpLog(int64_t a, int64_t x, const int64_t& p){    // вычисле�
         row_of_a.push_back(Mod_pow(a, pow(2, i), p));     // запиываем ряд <a, a^2, a^4, ... a^(2^z)>
     }
     
+    cout << "Получаем ряд: " << row_of_a << endl;
+    
     vector<int> binx = Dec_to_Bin(x);
+    cout << "Двоичное разложение числа " << x << " в обратном порядке: " << binx << endl;
     int64_t result = 1;
-    for (int i = 0; i < max_pow_of2; i++){                // перемножаем значения ряда, на индекса которых в двоичном представлении числа стоит 1
+    for (int i = 0; i <= max_pow_of2; i++){                // перемножаем значения ряда, на индекса которых в двоичном представлении числа стоит 1
         if (binx[i] == 1){
-            result = (result * max_pow_of2) % p;
+            result = (result * row_of_a[i]) % p;
         }
     }
     return result;
@@ -121,7 +133,7 @@ void Tests_AXMODP(){
     assert(GCD_is1(1234, 54) == false);
     assert(Primary(19, 5) == true);
     assert(AxmodpLog(3, 100, 7) == 4);
-    //assert(Mod_pow(<#int64_t a#>, <#int64_t x#>, <#const int64_t &p#>));
+    assert(Mod_pow(3, 8, 13) == 9);
     vector<int> vc = {1,0,1,0,0,1,0,1};
     assert(Dec_to_Bin(165) == vc);
 }
