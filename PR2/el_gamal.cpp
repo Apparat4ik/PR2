@@ -1,13 +1,11 @@
 #include "header.h"
 #include <map>
 #include <chrono>
+#include <fstream>
 
 
 random_device rd;
 mt19937 gen(rd());
-
-vector<pair<uint64_t, uint64_t>> Cypher_text;
-
 
 map<char, uint64_t> Public_Key = {};
 
@@ -16,7 +14,6 @@ uint64_t Private_Key;
 uint64_t Session_Key;
 
 vector<int> pr_num;
-
 
 
 
@@ -202,13 +199,26 @@ void GenKeys(int k, int t){
 
 
 
-void Encryption(const uint64_t& m){
-    uint64_t a = Mod_pow(Public_Key['g'], Session_Key, Public_Key['p']);
-    uint64_t b1 = Mod_pow(Public_Key['y'], Session_Key, Public_Key['p']);
-    uint64_t b2 = Mod_pow(m, 1, Public_Key['p']);
-    uint64_t b = Mod_pow(b1 * b2, 1, Public_Key['p']);
-    Cypher_text.push_back({a, b});
-}
+void Encryption(string& plain_text, const string& filename){
+    ofstream file(filename, ios::binary);
+    
+    if (!file.is_open()) {
+            throw runtime_error("Ошибка: Не удалось открыть файл для записи: " + filename);
+    }
+    
+    for (uint8_t ltr : plain_text){
+        uint64_t a = Mod_pow(Public_Key['g'], Session_Key, Public_Key['p']);
+        uint64_t b1 = Mod_pow(Public_Key['y'], Session_Key, Public_Key['p']);
+        uint64_t b2 = Mod_pow(ltr, 1, Public_Key['p']);
+        uint64_t b = Mod_pow(b1 * b2, 1, Public_Key['p']);
+
+        file << a << ' ' << b << ' ';
+    }
+    plain_text.clear();
+    
+    file.close();
+ }
+
 
 
 
@@ -226,14 +236,32 @@ string M_to_text(uint64_t& m, string& plain_text){
     return plain_text;
 }
 
-void Decryption(string& plain_text){
-    for (pair<uint64_t, uint64_t> cypher : Cypher_text){
-        uint64_t m1 = Mod_pow(cypher.first, Public_Key['p'] - 1 - Private_Key, Public_Key['p']);
-        uint64_t m2 = Mod_pow(cypher.second, 1, Public_Key['p']);
-        uint64_t m = Mod_pow(m1 * m2, 1, Public_Key['p']);
-        M_to_text(m, plain_text);
+
+vector<uint64_t> ReadCypher(const string& filename){
+    ifstream file_cph(filename, ios::binary);
+    
+    if (!file_cph.is_open()) {
+            throw runtime_error("Ошибка: Не удалось открыть файл для чтения: " + filename);
     }
-    Cypher_text.clear();
+    
+    vector<uint64_t> cyph_nums;
+    uint64_t number;
+    while (file_cph >> number){
+        cyph_nums.push_back(number);
+    }
+    file_cph.close();
+    return cyph_nums;
+}
+
+void Decryption(string& plain_text, const string& filename){
+    vector<uint64_t> c_text = ReadCypher(filename);
+    
+    for (int i = 0; i < c_text.size(); i += 2){
+        uint64_t m1 = Mod_pow(c_text[i], Public_Key['p'] - 1 - Private_Key, Public_Key['p']);
+        uint64_t m2 = Mod_pow(c_text[i + 1], 1, Public_Key['p']);
+        uint64_t m = Mod_pow(m1 * m2, 1, Public_Key['p']);
+        plain_text += m;
+    }
 }
 
 
@@ -276,8 +304,7 @@ void Test_Sypher(){
     vector<pair<uint64_t, uint64_t>> dc = {{3, 2}};
     assert(Decomposition(9) == dc);
     assert(MillerTest(15, 5) == false);
-   // assert(G_is_PrimitiveRoot(<#uint64_t g#>, <#uint64_t p#>));
-    // M_to_text
+    assert(G_is_PrimitiveRoot(3, 7));
 }
 
 
@@ -288,22 +315,20 @@ void LaunchSypher(){
     GenKeys(30, 10);
     Session_Key = 1 + (gen() % (Public_Key['p'] - 2));
     string plain_text;
+    
     cout << "Введите текст, который хотите зашифровать" << endl;
     
     getline(cin, plain_text);
     getline(cin, plain_text);
 
-    for (uint8_t ltr : plain_text){
-        Encryption(ltr);
-        plain_text.erase(0);
-    }
+
+    Encryption(plain_text, "/Users/vladislav/Documents/PR2/PR2/cypher.txt");
    
-    cout << "Зашифрованное сообшение: " << endl;
-    cout << Cypher_text << endl;
+    cout << "Зашифрованное сообшение записано в файл cypher.txt: " << endl;
     
     cout << "Расшифрованное сообщение: " << endl;
     
-    Decryption(plain_text);
+    Decryption(plain_text, "/Users/vladislav/Documents/PR2/PR2/cypher.txt");
     cout << plain_text << endl;
 
 }
@@ -322,19 +347,16 @@ void LaunchWithAtack(){
     getline(cin, plain_text);
     getline(cin, plain_text);
     
-    for (uint8_t ltr : plain_text){
-        Encryption(ltr);
-        plain_text.erase(0);
-    }
+    
+    Encryption(plain_text, "/Users/vladislav/Documents/PR2/PR2/cypher.txt");
     
     DemonstrateAttack();
    
-    cout << "Зашифрованное сообшение: " << endl;
-    cout << Cypher_text << endl;
+    cout << "Зашифрованное сообшение записано в файл cypher.txt: " << endl;
     
     cout << "Расшифрованное сообщение: " << endl;
     
-    Decryption(plain_text);
+    Decryption(plain_text, "/Users/vladislav/Documents/PR2/PR2/cypher.txt");
     cout << plain_text << endl;
 }
 
