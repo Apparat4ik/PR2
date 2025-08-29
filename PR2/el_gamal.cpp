@@ -199,27 +199,30 @@ void GenKeys(int k, int t){
 
 
 
-void Encryption(string& plain_text, const string& filename){
-    ofstream file(filename, ios::binary);
+void Encryption(const string& file_in, const string& file_out){
+    ofstream Outfile(file_out, ios::binary);
+    ifstream Infile(file_in, ios::binary);
     
-    if (!file.is_open()) {
-            throw runtime_error("Ошибка: Не удалось открыть файл для записи: " + filename);
+    if (!Infile.is_open()) {
+        throw runtime_error("Ошибка: Не удалось открыть файл для записи: " + file_in);
+    } else if (!Outfile.is_open()){
+        throw runtime_error("Ошибка: Не удалось открыть файл для записи: " + file_out);
     }
     
-    for (uint8_t ltr : plain_text){
+    char ch;
+    
+    while (Infile.get(ch)){
         uint64_t a = Mod_pow(Public_Key['g'], Session_Key, Public_Key['p']);
         uint64_t b1 = Mod_pow(Public_Key['y'], Session_Key, Public_Key['p']);
-        uint64_t b2 = Mod_pow(ltr, 1, Public_Key['p']);
+        uint64_t b2 = Mod_pow(static_cast<uint8_t>(ch), 1, Public_Key['p']);
         uint64_t b = Mod_pow(b1 * b2, 1, Public_Key['p']);
 
-        file << a << ' ' << b << ' ';
+        Outfile << a << ' ' << b << ' ';
     }
-    plain_text.clear();
     
-    file.close();
+    Infile.close();
+    Outfile.close();
  }
-
-
 
 
 string M_to_text(uint64_t& m, string& plain_text){
@@ -241,7 +244,7 @@ vector<uint64_t> ReadCypher(const string& filename){
     ifstream file_cph(filename, ios::binary);
     
     if (!file_cph.is_open()) {
-            throw runtime_error("Ошибка: Не удалось открыть файл для чтения: " + filename);
+        throw runtime_error("Ошибка: Не удалось открыть файл для чтения: " + filename);
     }
     
     vector<uint64_t> cyph_nums;
@@ -253,14 +256,21 @@ vector<uint64_t> ReadCypher(const string& filename){
     return cyph_nums;
 }
 
-void Decryption(string& plain_text, const string& filename){
-    vector<uint64_t> c_text = ReadCypher(filename);
+
+void Decryption(const string& cipher_file, const string& decrypted_cipher){
+    ofstream Outfile(decrypted_cipher, ios::binary);
+    
+    if (!Outfile.is_open()) {
+        throw runtime_error("Ошибка: Не удалось открыть файл для чтения: " + decrypted_cipher);
+    }
+    
+    vector<uint64_t> c_text = ReadCypher(cipher_file);
     
     for (int i = 0; i < c_text.size(); i += 2){
         uint64_t m1 = Mod_pow(c_text[i], Public_Key['p'] - 1 - Private_Key, Public_Key['p']);
         uint64_t m2 = Mod_pow(c_text[i + 1], 1, Public_Key['p']);
         uint64_t m = Mod_pow(m1 * m2, 1, Public_Key['p']);
-        plain_text += m;
+        Outfile << static_cast<unsigned char>(m);
     }
 }
 
@@ -314,22 +324,19 @@ void LaunchSypher(){
     Sieve(500);
     GenKeys(30, 10);
     Session_Key = 1 + (gen() % (Public_Key['p'] - 2));
-    string plain_text;
+    string file_sellect;
     
-    cout << "Введите текст, который хотите зашифровать" << endl;
+    cout << "Введите путь к файлу, который хотите зашифровать" << endl;
     
-    getline(cin, plain_text);
-    getline(cin, plain_text);
+    cin >> file_sellect;
 
-
-    Encryption(plain_text, "/Users/vladislav/Documents/PR2/PR2/cypher.txt");
+    Encryption(file_sellect, "/Users/vladislav/Documents/PR2/PR2/cypher.txt");
    
-    cout << "Зашифрованное сообшение записано в файл cypher.txt: " << endl;
+    cout << "Зашифрованное сообшение записано в файл cypher.txt " << endl;
     
-    cout << "Расшифрованное сообщение: " << endl;
+    cout << "Расшифрованное сообщение в файле decrypt_cipher.txt" << endl;
     
-    Decryption(plain_text, "/Users/vladislav/Documents/PR2/PR2/cypher.txt");
-    cout << plain_text << endl;
+    Decryption("cypher.txt", "decrypt_cipher.txt");
 
 }
 
