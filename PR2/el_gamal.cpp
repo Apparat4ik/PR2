@@ -199,11 +199,11 @@ void GenKeys(int k, int t){
 
 
 
-void Encryption(const string& file_in, const string& file_out){
+void Encryption(const string& file_in, const string& file_out, bool atack){
     ofstream Outfile(file_out, ios::binary);
     ifstream Infile(file_in, ios::binary);
     
-    if (!Infile.is_open()) {
+    if (!Infile.is_open() && atack) {
         throw runtime_error("Ошибка: Не удалось открыть файл для записи: " + file_in);
     } else if (!Outfile.is_open()){
         throw runtime_error("Ошибка: Не удалось открыть файл для записи: " + file_out);
@@ -330,7 +330,7 @@ void LaunchSypher(){
     
     cin >> file_sellect;
 
-    Encryption(file_sellect, "/Users/vladislav/Documents/PR2/PR2/cypher.txt");
+    Encryption(file_sellect, "/Users/vladislav/Documents/PR2/PR2/cypher.txt", false);
    
     cout << "Зашифрованное сообшение записано в файл cypher.txt " << endl;
     
@@ -355,7 +355,7 @@ void LaunchWithAtack(){
     getline(cin, plain_text);
     
     
-    Encryption(plain_text, "/Users/vladislav/Documents/PR2/PR2/cypher.txt");
+    Encryption(plain_text, "/Users/vladislav/Documents/PR2/PR2/cypher.txt", false);
     
     DemonstrateAttack();
    
