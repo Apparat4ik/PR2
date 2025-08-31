@@ -34,7 +34,7 @@ int64_t Mod_pow(int64_t a, int64_t x, const int64_t& p){   // ф-ция, кот�
 }
 
 
-int64_t AxmodpLog(int64_t a, int64_t x, const int64_t& p){    // вычисление a^x mod p через представление степени в двоичном виде
+int64_t AxmodpLog(int64_t a, int64_t x, const int64_t& p, bool test){    // вычисление a^x mod p через представление степени в двоичном виде
     if (x == 1){return a % p;}
     if (x == 0){return 1;}
     
@@ -45,10 +45,12 @@ int64_t AxmodpLog(int64_t a, int64_t x, const int64_t& p){    // вычисле�
         row_of_a.push_back(Mod_pow(a, pow(2, i), p));     // запиываем ряд <a, a^2, a^4, ... a^(2^z)>
     }
     
-    cout << "Получаем ряд: " << row_of_a << endl;
-    
     vector<int> binx = Dec_to_Bin(x);
-    cout << "Двоичное разложение числа " << x << " в обратном порядке: " << binx << endl;
+    if (!test){
+        cout << "Получаем ряд: " << row_of_a << endl;
+        cout << "Двоичное разложение числа " << x << " в обратном порядке: " << binx << endl;
+    }
+
     int64_t result = 1;
     for (int i = 0; i <= max_pow_of2; i++){                // перемножаем значения ряда, на индекса которых в двоичном представлении числа стоит 1
         if (binx[i] == 1){
@@ -150,7 +152,7 @@ void Tests_AXMODP(){
     assert(Axmodp(3, 100, 7) == 4);
     assert(GCD_is1(1234, 54) == false);
     assert(Primary(19, 5) == true);
-    assert(AxmodpLog(3, 100, 7) == 4);
+    assert(AxmodpLog(3, 100, 7, true) == 4);
     assert(Mod_pow(3, 8, 13) == 9);
     assert(Fast_pow(3, 8, 13) == 9);
     vector<int> vc = {1,0,1,0,0,1,0,1};
@@ -220,7 +222,7 @@ void Log_solve(){
         if (!Primary(p, k)) {
             throw invalid_argument("Число p составное, введите простое число");
         }
-        if (AxmodpLog(a1, x1, p) == AxmodpLog(a2, x2, p)) {
+        if (AxmodpLog(a1, x1, p, false) == AxmodpLog(a2, x2, p, false)) {
             cout << "Числа равны по модулю" << endl;
         } else {
             cout << "Числа не равны по модулю, остатки первого и второго соответственно: " <<Axmodp(a1, x1, p) << ' ' << Axmodp(a2, x2, p) << endl;
