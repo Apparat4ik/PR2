@@ -93,6 +93,24 @@ bool GCD_is1(int64_t a, int64_t b){    // проверка: НОД = 1?
     return true;
 }
 
+// Быстрое возведение в степень по модулю
+uint64_t Fast_pow(uint64_t base, uint64_t exponent, uint64_t modulus) {
+    if (modulus == 1) return 0;
+
+    uint64_t result = 1;
+    base %= modulus;
+
+    while (exponent > 0) {
+        if (exponent & 1) {
+            result = (result * base) % modulus;
+        }
+        base = (base * base) % modulus;
+        exponent >>= 1;
+    }
+
+    return result;
+}
+
 
 bool Primary(const int64_t& p, const int16_t& k){    // провекра на простоту модуля p
     if (p == 2 || p == 3 || p == 5){
@@ -107,7 +125,7 @@ bool Primary(const int64_t& p, const int16_t& k){    // провекра на п
     int64_t a;
     for (int i = 0; i < k; i++){    // проверка идет k раз для точности проверки
         a = (a_r() % (p - 2)) + 2;
-        if (Axmodp(a, (p-1), p) != 1 || !GCD_is1(a, p)){     // проверка по теореме Ферма
+        if (Fast_pow(a, (p-1), p) != 1 || !GCD_is1(a, p)){     // проверка по теореме Ферма
             return false;
         }
     }
@@ -134,6 +152,7 @@ void Tests_AXMODP(){
     assert(Primary(19, 5) == true);
     assert(AxmodpLog(3, 100, 7) == 4);
     assert(Mod_pow(3, 8, 13) == 9);
+    assert(Fast_pow(3, 8, 13) == 9);
     vector<int> vc = {1,0,1,0,0,1,0,1};
     assert(Dec_to_Bin(165) == vc);
 }
@@ -161,9 +180,8 @@ void Classic_Solve(){
         int k = CorrectInput<int>(1, 200);
         
         
-
         if (!Primary(p, k)) {
-            cout << "Число p составное, введите простое число" << endl;
+            throw invalid_argument("Число p составное, введите простое число");
         }
         if (Axmodp(a1, x1, p) == Axmodp(a2, x2, p)) {
             cout << "Числа равны по модулю" << endl;
@@ -171,7 +189,7 @@ void Classic_Solve(){
             cout << "Числа не равны по модулю, остатки первого и второго соответственно: " <<Axmodp(a1, x1, p) << ' ' << Axmodp(a2, x2, p) << endl;
         }
     } catch (exception& s){
-        cerr << s.what();
+        cerr << s.what() << endl;
     }
 }
 
@@ -200,7 +218,7 @@ void Log_solve(){
         
 
         if (!Primary(p, k)) {
-            cout << "Число p составное, введите простое число" << endl;
+            throw invalid_argument("Число p составное, введите простое число");
         }
         if (AxmodpLog(a1, x1, p) == AxmodpLog(a2, x2, p)) {
             cout << "Числа равны по модулю" << endl;
@@ -208,6 +226,6 @@ void Log_solve(){
             cout << "Числа не равны по модулю, остатки первого и второго соответственно: " <<Axmodp(a1, x1, p) << ' ' << Axmodp(a2, x2, p) << endl;
         }
     } catch (exception& s){
-        cerr << s.what();
+        cerr << s.what() << endl;
     }
 }
