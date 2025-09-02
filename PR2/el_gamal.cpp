@@ -346,25 +346,22 @@ void LaunchWithAtack(){
     Test_Sypher();
     
     Sieve(500);
-    GenKeys(25, 10);
+    GenKeys(30, 10);
     Session_Key = 1 + (gen() % (Public_Key['p'] - 2));
-    string plain_text;
-    cout << "Введите текст, который хотите зашифровать" << endl;
-    
-    getline(cin, plain_text);
-    getline(cin, plain_text);
-    
-    
-    Encryption(plain_text, "/Users/vladislav/Documents/PR2/PR2/cypher.txt", false);
-    
+    string file_sellect;
     DemonstrateAttack();
+    
+    cout << "Введите путь к файлу, который хотите зашифровать" << endl;
+    
+    cin >> file_sellect;
+
+    Encryption(file_sellect, "/Users/vladislav/Documents/PR2/PR2/cypher.txt", false);
    
-    cout << "Зашифрованное сообшение записано в файл cypher.txt: " << endl;
+    cout << "Зашифрованное сообшение записано в файл cypher.txt " << endl;
     
-    cout << "Расшифрованное сообщение: " << endl;
+    cout << "Расшифрованное сообщение в файле decrypt_cipher.txt" << endl;
     
-    Decryption(plain_text, "/Users/vladislav/Documents/PR2/PR2/cypher.txt");
-    cout << plain_text << endl;
+    Decryption("cypher.txt", "/Users/vladislav/Documents/PR2/PR2/decrypt_cypher.txt");
 }
 
 
