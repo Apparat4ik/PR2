@@ -327,10 +327,13 @@ void LaunchSypher(){
     string file_sellect;
     
     cout << "Введите путь к файлу, который хотите зашифровать" << endl;
-    
     cin >> file_sellect;
-
-    Encryption(file_sellect, "/Users/vladislav/Documents/PR2/PR2/cypher.txt", false);
+    
+    try {
+        Encryption(file_sellect, "/Users/vladislav/Documents/PR2/PR2/cypher.txt", false);
+    } catch (exception& ss){
+        cerr << ss.what() << endl;
+    }
    
     cout << "Зашифрованное сообшение записано в файл cypher.txt " << endl;
     
@@ -352,10 +355,13 @@ void LaunchWithAtack(){
     DemonstrateAttack();
     
     cout << "Введите путь к файлу, который хотите зашифровать" << endl;
-    
     cin >> file_sellect;
-
-    Encryption(file_sellect, "/Users/vladislav/Documents/PR2/PR2/cypher.txt", false);
+    
+    try {
+        Encryption(file_sellect, "/Users/vladislav/Documents/PR2/PR2/cypher.txt", false);
+    } catch (exception& ss){
+        cerr << ss.what() << endl;
+    }
    
     cout << "Зашифрованное сообшение записано в файл cypher.txt " << endl;
     
