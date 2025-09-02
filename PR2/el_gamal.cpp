@@ -361,7 +361,7 @@ void LaunchWithAtack(){
     
     cout << "Расшифрованное сообщение в файле decrypt_cipher.txt" << endl;
     
-    Decryption("cypher.txt", "/Users/vladislav/Documents/PR2/PR2/decrypt_cypher.txt");
+    Decryption("cypher.txt", "/Users/vladislav/Documents/PR2/PR2/decrypt_cipher.txt");
 }
 
 
