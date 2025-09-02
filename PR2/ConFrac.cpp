@@ -61,7 +61,7 @@ void Solution(int a, int b, int d){
     int y = -(P_prev * pow(-1, k - 1) * d);
     cout << "Частное решение: " << "a = " << x << ", b = " << y << endl;
     cout << "Общее решение: " << "a = " << x << " + " << b << "t" << ' '
-                              << ",b = " << y << " + " << a << "t" << endl;
+                              << ",b = " << y << " - " << a << "t" << endl;
     cout << "t принадлежит Z" << endl;
 }
 
